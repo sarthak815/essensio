@@ -1,10 +1,9 @@
-package chainmgr
+package core
 
 import (
 	"fmt"
 
 	"github.com/manishmeganathan/essensio/common"
-	"github.com/manishmeganathan/essensio/core"
 	"github.com/manishmeganathan/essensio/db"
 )
 
@@ -17,7 +16,7 @@ var (
 type ChainManager struct {
 	// Represents the database of blockchain data
 	// This contains the state and blocks of the blockchain
-	db *db.Database
+	Db *db.Database
 
 	// Represents the hash of the last Block
 	Head common.Hash
@@ -32,12 +31,18 @@ func (chain *ChainManager) String() string {
 
 // AddBlock generates and appends a Block to the chain for a given string data.
 // The generated block is stored in the database. Any error that occurs is returned.
+<<<<<<< Updated upstream:core/chainmgr/chainmgr.go
 func (chain *ChainManager) AddBlock(txns core.Transactions) error {
 	// Create a new Block with the given transactions
 	block, err := core.NewBlock(txns, chain.Head, chain.Height)
 	if err != nil {
 		return fmt.Errorf("failed to generate block: %w", err)
 	}
+=======
+func (chain *ChainManager) AddBlock(data []*Transaction) error {
+	// Create a new Block with the given data
+	block := NewBlock(data, chain.head, chain.height)
+>>>>>>> Stashed changes:core/chainmgr.go
 
 	// Serialize the Block
 	blockData, err := block.Serialize()
@@ -46,7 +51,7 @@ func (chain *ChainManager) AddBlock(txns core.Transactions) error {
 	}
 
 	// Add block to db
-	if err := chain.db.SetEntry(block.BlockHash.Bytes(), blockData); err != nil {
+	if err := chain.Db.SetEntry(block.BlockHash.Bytes(), blockData); err != nil {
 		return fmt.Errorf("block store to db failed: %w", err)
 	}
 
@@ -89,18 +94,18 @@ func NewChainManager() (*ChainManager, error) {
 // It updates its in-memory chain state chain information from the DB.
 func (chain *ChainManager) load() (err error) {
 	// Open the database
-	if chain.db, err = db.Open(); err != nil {
+	if chain.Db, err = db.Open(); err != nil {
 		return err
 	}
 
 	// Get the chain head and set it
-	head, err := chain.db.GetEntry(ChainHeadKey)
+	head, err := chain.Db.GetEntry(ChainHeadKey)
 	if err != nil {
 		return fmt.Errorf("chain head retrieve failed: %w", err)
 	}
 
 	// Get the chain height
-	height, err := chain.db.GetEntry(ChainHeightKey)
+	height, err := chain.Db.GetEntry(ChainHeightKey)
 	if err != nil {
 		return fmt.Errorf("chain height retrieve failed: %w", err)
 	}
@@ -123,12 +128,13 @@ func (chain *ChainManager) load() (err error) {
 // It generates a Genesis Block and adds it to DB and updates all chain state data.
 func (chain *ChainManager) init() (err error) {
 	// Open the database
-	if chain.db, err = db.Open(); err != nil {
+	if chain.Db, err = db.Open(); err != nil {
 		return err
 	}
 
 	fmt.Println(">>>> New Blockchain Initialization. Creating Genesis Block <<<<")
 
+<<<<<<< Updated upstream:core/chainmgr/chainmgr.go
 	// Create Genesis Block
 	genesisBlock, err := core.GenesisBlock()
 	if err != nil {
@@ -136,13 +142,18 @@ func (chain *ChainManager) init() (err error) {
 	}
 
 	// Serialize the Genesis Block
+=======
+	// Create Genesis Block & serialize it
+	var tx []*Transaction
+	genesisBlock := NewBlock(tx, common.NullHash(), 0)
+>>>>>>> Stashed changes:core/chainmgr.go
 	genesisData, err := genesisBlock.Serialize()
 	if err != nil {
 		return fmt.Errorf("block serialize failed: %w", err)
 	}
 
 	// Add Genesis Block to DB
-	if err := chain.db.SetEntry(genesisBlock.BlockHash.Bytes(), genesisData); err != nil {
+	if err := chain.Db.SetEntry(genesisBlock.BlockHash.Bytes(), genesisData); err != nil {
 		return fmt.Errorf("genesis block store to db failed: %w", err)
 	}
 
@@ -159,14 +170,18 @@ func (chain *ChainManager) init() (err error) {
 
 // Stop closes the ChainManager's database client
 func (chain *ChainManager) Stop() {
-	chain.db.Close()
+	chain.Db.Close()
 }
 
 // syncState updates the chain head and height values into the DB at keys
 // specified by the ChainHeadKey and ChainHeightKey respectively.
 func (chain *ChainManager) syncState() error {
 	// Sync chain head into the DB
+<<<<<<< Updated upstream:core/chainmgr/chainmgr.go
 	if err := chain.db.SetEntry(ChainHeadKey, chain.Head.Bytes()); err != nil {
+=======
+	if err := chain.Db.SetEntry(ChainHeadKey, chain.head.Bytes()); err != nil {
+>>>>>>> Stashed changes:core/chainmgr.go
 		return fmt.Errorf("error syncing chain head: %w", err)
 	}
 
@@ -177,7 +192,7 @@ func (chain *ChainManager) syncState() error {
 	}
 
 	// Sync the encoded height into the DB
-	if err := chain.db.SetEntry(ChainHeightKey, height); err != nil {
+	if err := chain.Db.SetEntry(ChainHeightKey, height); err != nil {
 		return fmt.Errorf("error syncing chain height: %w", err)
 	}
 

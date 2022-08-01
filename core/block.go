@@ -16,6 +16,11 @@ type Block struct {
 	BlockTxns Transactions
 	// Number of blocks preceding the current block
 	BlockHeight int64
+<<<<<<< Updated upstream
+=======
+	// Raw data of the block (placeholder for transactions)
+	Transactions []*Transaction
+>>>>>>> Stashed changes
 	// Hash of the block header
 	BlockHash common.Hash
 }
@@ -25,9 +30,15 @@ func (block *Block) String() string {
 	var s strings.Builder
 
 	s.WriteString(fmt.Sprintf("=======[%v][%v]\n", block.BlockHeight, time.Unix(block.Timestamp, 0)))
+<<<<<<< Updated upstream
 	s.WriteString(fmt.Sprintf("Block Hash: %v\n", block.BlockHash.Hex()))
 	s.WriteString(fmt.Sprintf("Priori Hash: %v\n", block.Priori.Hex()))
 	s.WriteString(fmt.Sprintf("Txn Count: %v\n", block.TxnCount()))
+=======
+	s.WriteString(fmt.Sprintf("Block Hash: 0x%x\n", block.BlockHash))
+	s.WriteString(fmt.Sprintf("Priori Hash: 0x%x\n", block.Priori))
+	//s.WriteString(fmt.Sprintf("Data: %v\n", string(block.BlockData)))
+>>>>>>> Stashed changes
 	s.WriteString(fmt.Sprintf("Nonce: %v\n", block.Nonce))
 	s.WriteString("=========================================\n")
 
@@ -36,6 +47,7 @@ func (block *Block) String() string {
 
 // NewBlock generates a new Block for a given set of Transactions,
 // the hash of the previous block and the block height
+<<<<<<< Updated upstream
 func NewBlock(txns Transactions, priori common.Hash, height int64) (*Block, error) {
 	block := &Block{
 		BlockTxns:   txns,
@@ -48,11 +60,21 @@ func NewBlock(txns Transactions, priori common.Hash, height int64) (*Block, erro
 		return nil, fmt.Errorf("failed to generate transaction summary: %w", err)
 	}
 
+=======
+func NewBlock(txs []*Transaction, priori common.Hash, height int64) *Block {
+	block := &Block{
+		Transactions: txs,
+		BlockHeight:  height,
+	}
+
+	// Generate the hash of the data
+	summary := common.Hash256(Serializetxn(txs))
+>>>>>>> Stashed changes
 	// Create a BlockHeader with the priori and summary
 	header := NewBlockHeader(priori, summary)
 	block.BlockHeader = header
 
-	// Mine the Block & set the block hash
+	// Mine the Block & set the block ha                                                 sh
 	block.BlockHash = block.BlockHeader.Mint()
 
 	return block, nil
@@ -88,3 +110,16 @@ func (block *Block) Deserialize(data []byte) error {
 	*block = *object.(*Block)
 	return nil
 }
+
+// Serializetxn A method that returns the gob encoded data of the Transaction
+func Serializetxn(txn []*Transaction) []byte {
+	// Encode the blockheader as a gob and return it
+	encoded, _ := common.GobEncode(txn)
+	return encoded
+}
+
+// A method that decodes a gob of bytes into the Transaction struct
+//func (txn *Transaction) Deserialize(gobdata utils.Gob) {
+//	// Decode the gob data into the blockheader
+//	common.GobDecode(gobdata, txn)
+//}

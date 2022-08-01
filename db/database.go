@@ -7,10 +7,10 @@ import (
 )
 
 type Database struct {
-	client *badger.DB
+	Client *badger.DB
 }
 
-// Open opens a Badger client to the database at Dir()
+// Open opens a Badger Client to the database at Dir()
 func Open() (*Database, error) {
 	// Setup Badger Options
 	opts := badger.DefaultOptions(Dir())
@@ -22,20 +22,20 @@ func Open() (*Database, error) {
 		return nil, fmt.Errorf("db open fail: %w", err)
 	}
 
-	// Wrap client inside Database and return
+	// Wrap Client inside Database and return
 	return &Database{client}, nil
 }
 
-// Close closes the Badger client to the database at Dir()
+// Close closes the Badger Client to the database at Dir()
 func (db *Database) Close() {
-	if err := db.client.Close(); err != nil {
+	if err := db.Client.Close(); err != nil {
 		panic(fmt.Errorf("db close fail: %w", err))
 	}
 }
 
 func (db *Database) GetEntry(key []byte) (value []byte, err error) {
 	// Define a view transaction on the database
-	err = db.client.View(func(txn *badger.Txn) error {
+	err = db.Client.View(func(txn *badger.Txn) error {
 		// Attempt to get the Item for the given key
 		item, err := txn.Get(key)
 		if err != nil {
@@ -59,7 +59,7 @@ func (db *Database) GetEntry(key []byte) (value []byte, err error) {
 
 func (db *Database) SetEntry(key, value []byte) error {
 	// Define an update transaction the database
-	return db.client.Update(func(txn *badger.Txn) error {
+	return db.Client.Update(func(txn *badger.Txn) error {
 		// Attempt to set the key-value pair to the database
 		if err := txn.Set(key, value); err != nil {
 			return fmt.Errorf("db set for key '%x' failed: %w", key, err)

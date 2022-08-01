@@ -1,10 +1,9 @@
-package chainmgr
+package core
 
 import (
 	"fmt"
 
 	"github.com/manishmeganathan/essensio/common"
-	"github.com/manishmeganathan/essensio/core"
 	"github.com/manishmeganathan/essensio/db"
 )
 
@@ -19,12 +18,16 @@ type ChainIterator struct {
 
 // NewIterator constructs a new ChainIterator for the BlockChain.
 func (chain *ChainManager) NewIterator() *ChainIterator {
+<<<<<<< Updated upstream:core/chainmgr/chainiter.go
 	return &ChainIterator{chain.Head, chain.db}
+=======
+	return &ChainIterator{chain.head, chain.Db}
+>>>>>>> Stashed changes:core/chainiter.go
 }
 
 // Next returns the next Block in the ChainIterator.
 // Returns an error if a Block is not found or is invalid.
-func (iter *ChainIterator) Next() (*core.Block, error) {
+func (iter *ChainIterator) Next() (*Block, error) {
 	// Find the Block with hash represented by the iterator cursor
 	data, err := iter.database.GetEntry(iter.cursor.Bytes())
 	if err != nil {
@@ -32,7 +35,7 @@ func (iter *ChainIterator) Next() (*core.Block, error) {
 	}
 
 	// Create a new Block and deserialize the block data into it
-	block := new(core.Block)
+	block := new(Block)
 	if err := block.Deserialize(data); err != nil {
 		return nil, fmt.Errorf("block deserialize failed: %w", err)
 	}

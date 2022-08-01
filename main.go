@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/manishmeganathan/essensio/core"
 	"log"
+<<<<<<< Updated upstream
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -11,6 +13,46 @@ import (
 
 	"github.com/manishmeganathan/essensio/jsonrpc"
 )
+=======
+	"os"
+)
+
+func main() {
+	// Check if a command has been entered
+	if len(os.Args) < 2 {
+		log.Fatalln("Command Not Found")
+	}
+
+	// Read the command and check its value
+	switch cmd := os.Args[1]; cmd {
+	// AddBlock command
+	case "addblock":
+		// Check if an input has been provided for the block data
+		if len(os.Args) < 3 {
+			log.Fatalln("Missing Input for 'AddBlock' command")
+		}
+
+		// Load up the BlockChain
+		chain, err := core.NewChainManager()
+		if err != nil {
+			log.Fatalln("Failed to Start Blockchain:", err)
+		}
+
+		defer chain.Stop()
+
+		// Add the Block with the given data to the chain
+		if err := chain.AddBlock(os.Args[2]); err != nil {
+			log.Fatalln("Failed to Add Block to Chain:", err)
+		}
+
+	// ShowChain command
+	case "showchain":
+		// Load up the BlockChain
+		chain, err := core.NewChainManager()
+		if err != nil {
+			log.Fatalln("Failed to Start Blockchain:", err)
+		}
+>>>>>>> Stashed changes
 
 // TODO:
 // 1. RPC instead CLI -  Done
