@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/manishmeganathan/essensio/common"
+	"github.com/essensio_network/common"
 )
 
 // Transactions is a group of Transaction objects

@@ -4,7 +4,7 @@ import (
 	"container/heap"
 	"sort"
 
-	"github.com/manishmeganathan/essensio/core"
+	"github.com/essensio_network/core"
 )
 
 // TransactionSet represents a group of nonce sorted Transactions

@@ -3,9 +3,9 @@ package chainmgr
 import (
 	"fmt"
 
-	"github.com/manishmeganathan/essensio/common"
-	"github.com/manishmeganathan/essensio/core"
-	"github.com/manishmeganathan/essensio/db"
+	"github.com/essensio_network/common"
+	"github.com/essensio_network/core"
+	"github.com/essensio_network/db"
 )
 
 // ChainIterator is a struct that can iterate

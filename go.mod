@@ -1,6 +1,6 @@
-module github.com/manishmeganathan/essensio
+module github.com/essensio_network
 
-go 1.18
+go 1.16
 
 require (
 	github.com/dgraph-io/badger v1.6.2
@@ -9,12 +9,11 @@ require (
 )
 
 require (
-	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
-	github.com/cespare/xxhash v1.1.0 // indirect
-	github.com/dgraph-io/ristretto v0.0.2 // indirect
-	github.com/dustin/go-humanize v1.0.0 // indirect
-	github.com/golang/protobuf v1.3.1 // indirect
-	github.com/pkg/errors v0.8.1 // indirect
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
+	github.com/libp2p/go-libp2p v0.18.0-rc2
+	github.com/libp2p/go-libp2p-core v0.14.0
+	github.com/libp2p/go-libp2p-discovery v0.6.0
+	github.com/libp2p/go-libp2p-kad-dht v0.15.0
+	github.com/libp2p/go-libp2p-pubsub v0.6.1
+	github.com/multiformats/go-multiaddr v0.6.0
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 )

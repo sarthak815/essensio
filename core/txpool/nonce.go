@@ -1,6 +1,6 @@
 package txpool
 
-import "github.com/manishmeganathan/essensio/core"
+import "github.com/essensio_network/core"
 
 // nonceHeap is a slice of sorted nonce numbers (uint64)
 // It implements the heap.Interface type.
@@ -20,13 +20,13 @@ func (n nonceHeap) Swap(i, j int) { n[i], n[j] = n[j], n[i] }
 
 // Push pushes x into the nonceHeap.
 // Implements the heap.Interface type for nonceHeap.
-func (n *nonceHeap) Push(x any) {
+func (n *nonceHeap) Push(x interface{}) {
 	*n = append(*n, x.(uint64))
 }
 
 // Pop pops the last element from the nonceHeap (the lowest nonce).
 // Implements the heap.Interface type for nonceHeap
-func (n *nonceHeap) Pop() any {
+func (n *nonceHeap) Pop() interface{} {
 	// Dereference the slice and get its length
 	old := *n
 	count := len(old)

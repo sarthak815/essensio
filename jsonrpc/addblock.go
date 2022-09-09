@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/manishmeganathan/essensio/common"
-	"github.com/manishmeganathan/essensio/core"
+	"github.com/essensio_network/common"
+	"github.com/essensio_network/core"
 )
 
 type AddBlockArgs struct {
@@ -45,6 +45,6 @@ func (api *API) AddBlock(r *http.Request, args *AddBlockArgs, result *AddBlockRe
 		BlockHeight: uint64(api.chain.Height - 1),
 		BlockHash:   api.chain.Head.Hex(),
 	}
-
+	log.Println("Sending block pubsub")
 	return nil
 }

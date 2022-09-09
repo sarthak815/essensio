@@ -3,9 +3,9 @@ package chainmgr
 import (
 	"fmt"
 
-	"github.com/manishmeganathan/essensio/common"
-	"github.com/manishmeganathan/essensio/core"
-	"github.com/manishmeganathan/essensio/db"
+	"github.com/essensio_network/common"
+	"github.com/essensio_network/core"
+	"github.com/essensio_network/db"
 )
 
 var (
@@ -49,6 +49,7 @@ func (chain *ChainManager) AddBlock(txns core.Transactions) error {
 	if err := chain.db.SetEntry(block.BlockHash.Bytes(), blockData); err != nil {
 		return fmt.Errorf("block store to db failed: %w", err)
 	}
+	//Send block data to other active nodes
 
 	// Update the chain head with the new block hash and increment chain height
 	chain.Head = block.BlockHash

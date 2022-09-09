@@ -1,10 +1,13 @@
 package txpool
 
 import (
+	"encoding/json"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"log"
 	"sync"
 
-	"github.com/manishmeganathan/essensio/common"
-	"github.com/manishmeganathan/essensio/core"
+	"github.com/essensio_network/common"
+	"github.com/essensio_network/core"
 )
 
 const (
@@ -39,6 +42,8 @@ type TxnPool interface {
 	// Active returns the number of transactions in active set.
 	// This does not include transactions in the pending set.
 	Active() int
+
+	BroadcastTx(tx *core.Transaction)
 }
 
 // TxnNoncePool is a Transaction Pool that implements the TxnPool interface.
@@ -59,15 +64,19 @@ type TxnNoncePool struct {
 	// lookup is a flat collection of Transactions that can be used
 	// to peek into the pool. Does not contain pending transactions.
 	lookup map[common.Hash]*core.Transaction
+
+	// newTxnsChan holds the transactions that are recently added to the pool
+	newTxnsChan chan *core.Transaction
 }
 
 // NewTxnNoncePool generates and returns a new TxnNoncePool object
 func NewTxnNoncePool() *TxnNoncePool {
 	return &TxnNoncePool{
-		mu:      &sync.RWMutex{},
-		pool:    make(map[common.Address]*TransactionSet),
-		pending: make(map[common.Hash]*core.Transaction),
-		lookup:  make(map[common.Hash]*core.Transaction),
+		mu:          &sync.RWMutex{},
+		pool:        make(map[common.Address]*TransactionSet),
+		pending:     make(map[common.Hash]*core.Transaction),
+		lookup:      make(map[common.Hash]*core.Transaction),
+		newTxnsChan: make(chan *core.Transaction, 20),
 	}
 }
 
@@ -135,6 +144,8 @@ func (pool *TxnNoncePool) FetchFor(address common.Address) *TransactionSet {
 // Insert implements the TxnPool interface for TxnNoncePool.
 // Accepts a variadic number of Transactions and adds each one to the active set.
 func (pool *TxnNoncePool) Insert(transactions ...*core.Transaction) {
+	log.Println("Adding transaction from ", transactions[0].From)
+
 	// Acquire Mutex
 	pool.mu.Lock()
 	defer pool.mu.Unlock()
@@ -261,4 +272,23 @@ func (pool *TxnNoncePool) Active() int {
 	defer pool.mu.RUnlock()
 
 	return len(pool.lookup)
+}
+
+func (pool *TxnNoncePool) BroadcastTx(tx *core.Transaction) {
+	pool.newTxnsChan <- tx
+}
+
+func (pool *TxnNoncePool) NewTransactionsChan() chan *core.Transaction {
+	return pool.newTxnsChan
+}
+
+func (pool *TxnNoncePool) PubSubHandler(msg *pubsub.Message) {
+	log.Println("Transaction Message Received from", msg.ReceivedFrom)
+	rawData := msg.Data
+	tx := new(core.Transaction)
+	if err := json.Unmarshal(rawData, tx); err != nil {
+		log.Print("Error unmarshalling the transaction")
+	}
+
+	pool.Insert(tx)
 }

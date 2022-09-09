@@ -6,7 +6,7 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/manishmeganathan/essensio/common"
+	"github.com/essensio_network/common"
 )
 
 const (

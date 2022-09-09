@@ -17,7 +17,7 @@ type Serializable interface {
 
 // GobEncode encodes an object into a gob encoded stream of bytes.
 // Returns an error if the gob encoder fails
-func GobEncode(object any) ([]byte, error) {
+func GobEncode(object interface{}) ([]byte, error) {
 	// Declare a buffer and a new Gob encoder
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
@@ -33,7 +33,7 @@ func GobEncode(object any) ([]byte, error) {
 
 // GobDecode decodes a stream of bytes into a given object.
 // Returns an error if the gob decoded fails.
-func GobDecode(data []byte, object any) (any, error) {
+func GobDecode(data []byte, object interface{}) (interface{}, error) {
 	// Declare a new reader from the data and a new Gob decoder
 	reader := bytes.NewReader(data)
 	decoder := gob.NewDecoder(reader)

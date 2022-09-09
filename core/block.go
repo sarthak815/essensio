@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/manishmeganathan/essensio/common"
+	"github.com/essensio_network/common"
 )
 
 // Block is a struct that represents a Block of data in the BlockChain

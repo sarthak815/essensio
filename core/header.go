@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/manishmeganathan/essensio/common"
+	"github.com/essensio_network/common"
 )
 
 // BlockHeader is a struct that contains all the fields
